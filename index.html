@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Karol IA - Newsletter</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background-color: #f1f3f9;
       display: flex;
       justify-content: center;
@@ -14,94 +14,168 @@
       height: 100vh;
       margin: 0;
     }
+
     .card {
       background-color: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
       width: 100%;
-      max-width: 480px;
+      max-width: 460px;
+      text-align: center;
     }
+
     h2 {
-      text-align: center;
       color: #322b71;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
     }
+
     h1 {
-      text-align: center;
       color: #322b71;
       font-size: 1.8rem;
       margin-bottom: 1rem;
     }
+
     p {
-      text-align: center;
       color: #666;
+      font-size: 0.95rem;
       margin-bottom: 2rem;
     }
+
     label {
+      text-align: left;
       display: block;
-      margin-bottom: 0.3rem;
-      font-weight: bold;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
       color: #333;
     }
+
     input {
       width: 100%;
       padding: 0.75rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.2rem;
       border: 1px solid #ccc;
       border-radius: 8px;
       font-size: 1rem;
+      outline: none;
     }
+
     button {
       background-color: #322b71;
       color: white;
       border: none;
-      padding: 0.8rem;
+      padding: 0.85rem;
       font-size: 1rem;
       width: 100%;
       border-radius: 8px;
       cursor: pointer;
       transition: background 0.3s ease;
     }
+
     button:hover {
-      background-color: #291f5d;
+      background-color: #261f5a;
+    }
+
+    .error {
+      color: #d93025;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      z-index: 999;
+      text-align: center;
+    }
+
+    .modal h3 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: #322b71;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 998;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
-
   <div class="card">
     <h2>Karol IA</h2>
     <h1>Suscríbete a nuestra Newsletter</h1>
     <p>Mantente al día con las últimas noticias y avances en Inteligencia Artificial</p>
     <form id="newsletterForm">
-      <label for="name">Nombre</label>
-      <input type="text" id="name" name="name" required>
-
-      <label for="email">Correo electrónico</label>
-      <input type="email" id="email" name="email" required>
-
+      <div style="text-align: left;">
+        <label for="name">Nombre</label>
+        <input type="text" id="name" name="name" />
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" />
+        <div id="errorMsg" class="error hidden">Por favor, completa ambos campos.</div>
+      </div>
       <button type="submit">Suscribirse</button>
     </form>
   </div>
 
+  <!-- Modal de agradecimiento -->
+  <div id="thankYouModal" class="modal hidden">
+    <h3>¡Gracias por suscribirte!</h3>
+  </div>
+  <div id="modalOverlay" class="overlay hidden"></div>
+
   <script>
     const form = document.getElementById('newsletterForm');
+    const errorMsg = document.getElementById('errorMsg');
+    const thankYouModal = document.getElementById('thankYouModal');
+    const modalOverlay = document.getElementById('modalOverlay');
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+
+      if (!name || !email) {
+        errorMsg.classList.remove('hidden');
+        return;
+      }
+
+      errorMsg.classList.add('hidden');
 
       try {
         const response = await fetch('https://hook.eu2.make.com/sr2onhyj4p5hillhp92vx8msqgy4ygw6', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email })
+          body: JSON.stringify({ name, email }),
         });
 
         if (response.ok) {
-          alert('¡Gracias por suscribirte!');
+          // Mostrar modal de gracias
+          thankYouModal.classList.remove('hidden');
+          modalOverlay.classList.remove('hidden');
+
+          // Cerrar modal automáticamente después de 3 segundos
+          setTimeout(() => {
+            thankYouModal.classList.add('hidden');
+            modalOverlay.classList.add('hidden');
+          }, 3000);
+
           form.reset();
         } else {
           alert('Hubo un error. Inténtalo más tarde.');
@@ -112,6 +186,5 @@
       }
     });
   </script>
-
 </body>
 </html>
