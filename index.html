@@ -21,7 +21,7 @@
       border-radius: 16px;
       box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
       width: 100%;
-      max-width: 460px;
+      max-width: 480px;
       text-align: center;
     }
 
@@ -50,7 +50,7 @@
       color: #333;
     }
 
-    input {
+    input, textarea {
       width: 100%;
       padding: 0.75rem;
       margin-bottom: 1.2rem;
@@ -125,9 +125,14 @@
       <div style="text-align: left;">
         <label for="name">Nombre</label>
         <input type="text" id="name" name="name" />
+
         <label for="email">Correo electrónico</label>
         <input type="email" id="email" name="email" />
-        <div id="errorMsg" class="error hidden">Por favor, completa ambos campos.</div>
+
+        <label for="interes">¿Qué te gustaría aprender sobre IA?</label>
+        <textarea id="interes" name="interes" rows="3"></textarea>
+
+        <div id="errorMsg" class="error hidden">Por favor, completa todos los campos.</div>
       </div>
       <button type="submit">Suscribirse</button>
     </form>
@@ -150,8 +155,9 @@
 
       const name = document.getElementById('name').value.trim();
       const email = document.getElementById('email').value.trim();
+      const interes = document.getElementById('interes').value.trim();
 
-      if (!name || !email) {
+      if (!name || !email || !interes) {
         errorMsg.classList.remove('hidden');
         return;
       }
@@ -162,20 +168,16 @@
         const response = await fetch('https://hook.eu2.make.com/sr2onhyj4p5hillhp92vx8msqgy4ygw6', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email }),
+          body: JSON.stringify({ name, email, interes })
         });
 
         if (response.ok) {
-          // Mostrar modal de gracias
           thankYouModal.classList.remove('hidden');
           modalOverlay.classList.remove('hidden');
-
-          // Cerrar modal automáticamente después de 3 segundos
           setTimeout(() => {
             thankYouModal.classList.add('hidden');
             modalOverlay.classList.add('hidden');
           }, 3000);
-
           form.reset();
         } else {
           alert('Hubo un error. Inténtalo más tarde.');
